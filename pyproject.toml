@@ -1,0 +1,77 @@
+[tool.poetry]
+name = "manatal"
+version = "0.1.0"
+description = ""
+authors = ["Mykhailo Polishchuk <mpolishchuk86@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+uvicorn = { extras = ["standard"], version = "^0.34.0" }
+fastapi = { extras = ["standard"], version = "^0.115.11" }
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 127
+indent-width = 4
+exclude = [
+    ".git",
+    "__pycache__",
+    "__init__.py",
+]
+
+[tool.ruff.lint]
+select = ["F", "I"]
+ignore = [
+    "PT",
+    "S",
+    "W191",
+    "ANN101",
+    "ANN102",
+    "FA102",
+    "G004",
+    "RUF012",
+    "ANN002",
+    "ANN003",
+    "FBT001",
+    "TRY401",
+    "SLF001",
+    "TRY400",
+    "TRY003",
+    "EM101",
+    "PLR0913",
+    "ARG002",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+mypy-init-return = true
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["id"]
+
+[tool.ruff.lint.flake8-type-checking]
+quote-annotations = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.pylint]
+max-args = 6
+
+[tool.coverage.run]
+source = ["apps/"]
+omit = ["*/migrations/*", "*/__init__.py", "*/apps.py", "*/tests/*"]
+
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:"]
