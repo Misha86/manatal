@@ -8,8 +8,15 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.13"
 uvicorn = { extras = ["standard"], version = "^0.34.0" }
-fastapi = { extras = ["standard"], version = "^0.115.11" }
+fastapi = "^0.115.11"
+python-multipart = "^0.0.20"
+alembic = "^1.15.1"
+sqlalchemy = "^2.0.39"
+pydantic-settings = "^2.8.1"
 
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.2.0"
 
 [build-system]
 requires = ["poetry-core"]

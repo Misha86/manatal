@@ -86,6 +86,7 @@ __pycache__/
 local_settings.py
 
 .env
+.env.local
 db.sqlite3
 .vscode
 .mypy.ini
@@ -93,7 +94,6 @@ staticfiles/
 .secrets/
 Untitled*
 .coveragerc
-
+.pre-commit-config.yaml
 
 .idea/
-.qodo/
