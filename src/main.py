@@ -1,8 +1,8 @@
-from typing import Annotated
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src import users
 from src.config import settings
 
 app = FastAPI()
@@ -18,8 +18,4 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
-@app.post("/uploadfiles/")
-async def create_upload_files(
-    files: Annotated[list[UploadFile], File(description="Multiple files as UploadFile")],
-):
-    return {"filenames": [file.filename for file in files]}
+app.include_router(users.router)
