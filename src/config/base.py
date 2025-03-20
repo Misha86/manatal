@@ -1,4 +1,5 @@
 import secrets
+from pathlib import Path
 from typing import List, Optional, Union
 
 from pydantic import AnyHttpUrl, HttpUrl, PostgresDsn, ValidationInfo, field_validator
@@ -11,6 +12,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "My first project"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ENVIRONMENT: str
+    BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
