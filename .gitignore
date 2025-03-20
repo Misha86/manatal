@@ -94,6 +94,6 @@ staticfiles/
 .secrets/
 Untitled*
 .coveragerc
-.pre-commit-config.yaml
 
 .idea/
+mediafiles/
