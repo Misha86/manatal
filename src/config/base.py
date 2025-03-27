@@ -21,7 +21,7 @@ from src.core.cache.backends.redis import RedisBytecodeCache
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=True)
 
-    PROJECT_NAME: str = "My first project"
+    PROJECT_NAME: str = "Manatal APIs"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ENVIRONMENT: str
 

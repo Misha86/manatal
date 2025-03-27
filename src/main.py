@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src import users
 from src.config import settings
 
-app = FastAPI()
+app = FastAPI(title=settings.PROJECT_NAME)
 
 
 if settings.BACKEND_CORS_ORIGINS:

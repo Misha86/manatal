@@ -1,13 +1,11 @@
-
 from fastapi import APIRouter, Depends, Form, UploadFile
 from fastapi.responses import HTMLResponse
 from pydantic import UUID4
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
 from src.database import get_async_session
-from src.users.models import User
+from src.users import schemas, service
 
 router = APIRouter(
     prefix="/users",
@@ -16,39 +14,26 @@ router = APIRouter(
 )
 
 
-@router.get("/{user_id}")
+@router.get("/{user_id}", response_model=schemas.UserData)
 async def get_user(user_id: UUID4, session: AsyncSession = Depends(get_async_session)):
-    stmt = select(User).where(User.id == user_id)
-    result = await session.scalars(stmt)
-    return result.one_or_none() or {}
+    return await service.get_user(session, user_id) or {}
 
 
-@router.get("/")
+@router.get("/", response_model=list[schemas.UserData])
 async def get_users(session: AsyncSession = Depends(get_async_session)):
-    result = await session.scalars(select(User))
-    users = result.all()
-
-    return users
+    return await service.get_users(session)
 
 
-@router.post("/")
+@router.post("/", response_model=schemas.UserData)
 async def create_upload_files(logo: UploadFile, name: str = Form(), session: AsyncSession = Depends(get_async_session)):
-    new_user = User(name=name, logo=logo)
-
-    session.add(new_user)
-    await session.commit()
-    await session.refresh(new_user)
-
-    return new_user
+    return await service.create_user(logo, name, session)
 
 
 @router.get("/{user_id}/html", response_class=HTMLResponse)
 async def get_user_html(user_id: UUID4, session: AsyncSession = Depends(get_async_session)):
-    stmt = select(User).where(User.id == user_id)
-    result = await session.scalars(stmt)
-    user = result.one_or_none() or {}
-    
+    user = await service.get_user(session, user_id) or {}
+
     template = settings.JINJA2_ENV.get_template("users/user_info.html")
     output = await template.render_async({"user": user})
-    
+
     return output
