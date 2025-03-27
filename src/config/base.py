@@ -2,6 +2,7 @@ import secrets
 from pathlib import Path
 from typing import List, Union
 
+from fastapi.templating import Jinja2Templates
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pydantic import (
     AnyHttpUrl,
@@ -84,3 +85,5 @@ class Settings(BaseSettings):
         lstrip_blocks=True,
         enable_async=True,
     )
+    
+    JINJA2_API_ENV: Jinja2Templates = Jinja2Templates(env=JINJA2_ENV)
