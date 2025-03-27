@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome, {{ user.name }}</title>
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+
 </head>
+
 <body>
     <header>
         <h1>Welcome</h1>
@@ -12,9 +16,11 @@
     <main>
         <p>Name: {{ user.name }}</p>
         <p>Fullname: {{ user.fullname }}</p>
+        <img src="{{ user.logo }}">
     </main>
     <footer>
         <p>&copy; 2025 Your Company</p>
     </footer>
 </body>
+
 </html>

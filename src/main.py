@@ -1,11 +1,13 @@
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from src import users
 from src.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 if settings.BACKEND_CORS_ORIGINS:
