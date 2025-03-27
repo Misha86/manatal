@@ -1,9 +1,11 @@
 
 from fastapi import APIRouter, Depends, Form, UploadFile
+from fastapi.responses import HTMLResponse
 from pydantic import UUID4
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.config import settings
 from src.database import get_async_session
 from src.users.models import User
 
@@ -38,3 +40,15 @@ async def create_upload_files(logo: UploadFile, name: str = Form(), session: Asy
     await session.refresh(new_user)
 
     return new_user
+
+
+@router.get("/{user_id}/html", response_class=HTMLResponse)
+async def get_user_html(user_id: UUID4, session: AsyncSession = Depends(get_async_session)):
+    stmt = select(User).where(User.id == user_id)
+    result = await session.scalars(stmt)
+    user = result.one_or_none() or {}
+    
+    template = settings.JINJA2_ENV.get_template("users/user_info.html")
+    output = await template.render_async({"user": user})
+    
+    return output
