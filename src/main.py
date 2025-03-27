@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src import users
 from src.config import settings
 
-app = FastAPI(title=settings.PROJECT_NAME)
+app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
 
 
 if settings.BACKEND_CORS_ORIGINS:
@@ -18,4 +18,4 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
-app.include_router(users.router)
+app.include_router(users.router, prefix="/api/v1")
