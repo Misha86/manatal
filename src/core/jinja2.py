@@ -9,7 +9,7 @@ from src.core.cache.backends.redis import RedisBytecodeCache
 TEMPLATE_DIRS: list[Path] = [settings.BASE_DIR / "templates"]
 
 bytecode_cache: RedisBytecodeCache = RedisBytecodeCache(
-    location=settings.JINJA2_REDIS_URL, key_prefix=settings.JINJA2_CACHE_PREFIX, timeout=settings.JINJA2_CACHE_TIMEOUT
+    location=settings.JINJA2_REDIS_CACHE_URL, key_prefix=settings.JINJA2_CACHE_PREFIX, timeout=settings.JINJA2_CACHE_TIMEOUT
 )
 
 jinja2_env: Environment = Environment(

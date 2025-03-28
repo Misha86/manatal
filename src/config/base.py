@@ -52,12 +52,16 @@ class Settings(BaseSettings):
         )
         return str(postgres_dsn)
 
-    JINJA2_REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_BASE_URL: str = "redis://localhost:6379"
+    
+    JINJA2_REDIS_CACHE_URL: str = f"{REDIS_BASE_URL}/0"
     JINJA2_CACHE_SIZE: int = 400
     JINJA2_CACHE_PREFIX: str = "jinja2:"
     JINJA2_CACHE_TIMEOUT: int = 3600
+    
+    REDIS_CACHE_URL: str = f"{REDIS_BASE_URL}/1"
 
-    @field_validator("JINJA2_REDIS_URL", mode="before")
+    @field_validator("JINJA2_REDIS_CACHE_URL", "REDIS_CACHE_URL", mode="before")
     @classmethod
     def validate_redis_dsn(cls, value: str) -> str:
         if isinstance(value, str) and str(RedisDsn(value)):
