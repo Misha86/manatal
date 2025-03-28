@@ -4,7 +4,7 @@ from pydantic import UUID4
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.utils import render_to_string
-from src.database import get_async_session
+from src.dependencies import get_async_session
 from src.users import schemas, service
 
 router = APIRouter(
