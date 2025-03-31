@@ -53,12 +53,12 @@ class Settings(BaseSettings):
         return str(postgres_dsn)
 
     REDIS_BASE_URL: str = "redis://localhost:6379"
-    
+
     JINJA2_REDIS_CACHE_URL: str = f"{REDIS_BASE_URL}/0"
     JINJA2_CACHE_SIZE: int = 400
     JINJA2_CACHE_PREFIX: str = "jinja2:"
     JINJA2_CACHE_TIMEOUT: int = 3600
-    
+
     REDIS_CACHE_URL: str = f"{REDIS_BASE_URL}/1"
 
     @field_validator("JINJA2_REDIS_CACHE_URL", "REDIS_CACHE_URL", mode="before")
@@ -66,3 +66,7 @@ class Settings(BaseSettings):
     def validate_redis_dsn(cls, value: str) -> str:
         if isinstance(value, str) and str(RedisDsn(value)):
             return value
+
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_REGION_NAME: str

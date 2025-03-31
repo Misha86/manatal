@@ -4,8 +4,8 @@ from pydantic import UUID4
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.utils import render_to_string
 from src.dependencies import get_async_session, get_redis
+from src.jinja2.utils import render_to_string
 from src.users import schemas, service
 
 router = APIRouter(

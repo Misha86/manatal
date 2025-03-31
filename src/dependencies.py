@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from redis.asyncio import from_url
 
 from src.config import settings
-from src.core.database import SessionLocal
+from src.database import SessionLocal
 
 if TYPE_CHECKING:
     from typing import AsyncGenerator
