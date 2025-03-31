@@ -70,3 +70,4 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY_ID: str
     AWS_SECRET_ACCESS_KEY: str
     AWS_REGION_NAME: str
+    AWS_STORAGE_BUCKET_NAME: str = "jinja2-test"
