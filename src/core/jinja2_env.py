@@ -1,19 +1,17 @@
-from pathlib import Path
 
 from fastapi.templating import Jinja2Templates
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, select_autoescape
 
 from src.config import settings
-from src.core.cache.backends.redis import RedisBytecodeCache
-
-TEMPLATE_DIRS: list[Path] = [settings.BASE_DIR / "templates"]
+from src.core.jinja2.cache import RedisBytecodeCache
+from src.core.jinja2.loaders import S3TemplateLoader
 
 bytecode_cache: RedisBytecodeCache = RedisBytecodeCache(
     location=settings.JINJA2_REDIS_CACHE_URL, key_prefix=settings.JINJA2_CACHE_PREFIX, timeout=settings.JINJA2_CACHE_TIMEOUT
 )
 
 jinja2_env: Environment = Environment(
-    loader=FileSystemLoader(TEMPLATE_DIRS),
+    loader=S3TemplateLoader("animal-runway", "templates"),
     autoescape=select_autoescape(enabled_extensions=("html",)),
     cache_size=settings.JINJA2_CACHE_SIZE,
     bytecode_cache=bytecode_cache,

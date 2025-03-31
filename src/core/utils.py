@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.core.jinja2 import jinja2_api_env
+from src.core.jinja2_env import jinja2_api_env
 
 if TYPE_CHECKING:
     from fastapi import Request
