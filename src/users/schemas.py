@@ -13,6 +13,11 @@ class UserCreate(User):
     pass
 
 
+class UserUpdate(BaseModel):
+    full_name: str | None = None
+    email: EmailStr | None = None
+
+
 class UserRetrieve(User):
     id: UUID4
     created_at: datetime

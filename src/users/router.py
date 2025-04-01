@@ -15,9 +15,9 @@ router = APIRouter(
 )
 
 
-@router.get("/{user_id}", response_model=schemas.UserRetrieve)
+@router.get("/{user_id}", response_model=schemas.UserRetrieve | None)
 async def get_user(user_id: UUID4, session: AsyncSession = Depends(get_async_session)):
-    return await service.get_user(session, user_id) or {}
+    return await service.get_user(session, user_id)
 
 
 @router.get("/", response_model=list[schemas.UserRetrieve])
@@ -26,8 +26,13 @@ async def get_users(session: AsyncSession = Depends(get_async_session)):
 
 
 @router.post("/", response_model=schemas.UserRetrieve)
-async def create_user(user_data: schemas.UserCreate, session: AsyncSession = Depends(get_async_session)):
-    return await service.create_user(user_data.model_dump(), session)
+async def create_user(user: schemas.UserCreate, session: AsyncSession = Depends(get_async_session)):
+    return await service.create_user(user.model_dump(), session)
+
+
+@router.put("/{user_id}", response_model=schemas.UserRetrieve | None)
+async def update_user(user_id: UUID4, user: schemas.UserUpdate, session: AsyncSession = Depends(get_async_session)):
+    return await service.update_user(user_id, user.model_dump(exclude_unset=True), session)
 
 
 @router.get("/{user_id}/html", response_class=HTMLResponse)
