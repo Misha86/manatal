@@ -7,7 +7,8 @@ from src.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+if settings.ENVIRONMENT == "local":
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 if settings.BACKEND_CORS_ORIGINS:

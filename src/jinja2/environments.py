@@ -1,9 +1,8 @@
-from fastapi.templating import Jinja2Templates
-
-from jinja2 import Environment, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from src.aws.client import s3_client
 from src.config import settings
 from src.jinja2.cache import RedisBytecodeCache
+from src.jinja2.constants import GLOBALS
 from src.jinja2.loaders import S3TemplateLoader
 
 bytecode_cache: RedisBytecodeCache = RedisBytecodeCache(
@@ -20,4 +19,8 @@ jinja2_env: Environment = Environment(
     enable_async=True,
 )
 
-jinja2_api_env: Jinja2Templates = Jinja2Templates(env=jinja2_env)
+jinja2_env.globals = GLOBALS
+
+
+if settings.ENVIRONMENT == "local":    
+    jinja2_env.loader = FileSystemLoader(settings.JINJA2_TEMPLATES_FOLDER)

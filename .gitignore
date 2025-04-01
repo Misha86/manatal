@@ -97,3 +97,5 @@ Untitled*
 
 .idea/
 mediafiles/
+templates/
+static/
