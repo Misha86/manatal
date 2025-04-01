@@ -70,5 +70,6 @@ class Settings(BaseSettings):
 
     AWS_ACCESS_KEY_ID: str
     AWS_SECRET_ACCESS_KEY: str
-    AWS_REGION_NAME: str
+    AWS_REGION_NAME: str = "us-east-1"
     AWS_STORAGE_BUCKET_NAME: str = "jinja2-test"
+    AWS_S3_CUSTOM_DOMAIN: str = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION_NAME}.amazonaws.com"
