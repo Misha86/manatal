@@ -21,4 +21,4 @@ class User(TimestampMixin, Base):
         return validate_email(address)
 
     def __str__(self) -> str:
-        return f"User(id={self.id!s}, name={self.name!s}, fullname={self.fullname!s})"
+        return f"User(id={self.id!s}, full_name={self.full_name}), email={self.email}), external_id={self.external_id!s})"
