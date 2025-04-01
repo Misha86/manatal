@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.users.models import User
 
 if TYPE_CHECKING:
-    from fastapi import UploadFile
     from pydantic import UUID4
     from sqlalchemy.engine import Result
 
@@ -22,8 +21,8 @@ async def get_users(session: AsyncSession) -> list[User] | None:
     return result.all()
 
 
-async def create_user(logo: "UploadFile", name: str, session: AsyncSession) -> User:
-    new_user = User(name=name, logo=logo)
+async def create_user(data: dict[str, Any], session: AsyncSession) -> User:
+    new_user = User(**data)
     session.add(new_user)
     await session.commit()
     await session.refresh(new_user)

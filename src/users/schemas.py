@@ -1,8 +1,19 @@
-from pydantic import UUID4, BaseModel, HttpUrl
+from datetime import datetime
+
+from pydantic import UUID4, BaseModel, EmailStr
 
 
-class UserData(BaseModel):
+class User(BaseModel):
+    full_name: str
+    email: EmailStr
+    external_id: UUID4
+
+
+class UserCreate(User):
+    pass
+
+
+class UserRetrieve(User):
     id: UUID4
-    name: str
-    logo: HttpUrl | str
-
+    created_at: datetime
+    updated_at: datetime

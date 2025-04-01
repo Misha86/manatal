@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Form, Request, UploadFile
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from pydantic import UUID4
 from redis.asyncio import Redis
@@ -15,19 +15,19 @@ router = APIRouter(
 )
 
 
-@router.get("/{user_id}", response_model=schemas.UserData)
+@router.get("/{user_id}", response_model=schemas.UserRetrieve)
 async def get_user(user_id: UUID4, session: AsyncSession = Depends(get_async_session)):
     return await service.get_user(session, user_id) or {}
 
 
-@router.get("/", response_model=list[schemas.UserData])
+@router.get("/", response_model=list[schemas.UserRetrieve])
 async def get_users(session: AsyncSession = Depends(get_async_session)):
     return await service.get_users(session)
 
 
-@router.post("/", response_model=schemas.UserData)
-async def create_upload_files(logo: UploadFile, name: str = Form(), session: AsyncSession = Depends(get_async_session)):
-    return await service.create_user(logo, name, session)
+@router.post("/", response_model=schemas.UserRetrieve)
+async def create_user(user_data: schemas.UserCreate, session: AsyncSession = Depends(get_async_session)):
+    return await service.create_user(user_data.model_dump(), session)
 
 
 @router.get("/{user_id}/html", response_class=HTMLResponse)
