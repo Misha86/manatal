@@ -55,6 +55,7 @@ class Settings(BaseSettings):
     REDIS_BASE_URL: str = "redis://localhost:6379"
 
     JINJA2_REDIS_CACHE_URL: str = f"{REDIS_BASE_URL}/0"
+    JINJA2_TEMPLATES_FOLDER: str = "templates"
     JINJA2_CACHE_SIZE: int = 400
     JINJA2_CACHE_PREFIX: str = "jinja2:"
     JINJA2_CACHE_TIMEOUT: int = 3600
