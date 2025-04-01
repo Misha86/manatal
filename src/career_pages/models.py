@@ -1,11 +1,16 @@
 import uuid
+from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, String
+from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column, validates
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.core.validators import validate_email
 from src.database import Base, TimestampMixin
+
+if TYPE_CHECKING:
+    from src.users.models import User
 
 
 class CareerPage(TimestampMixin, Base):
@@ -25,6 +30,10 @@ class CareerPage(TimestampMixin, Base):
     contact_phone: Mapped[str] = mapped_column(String)
     contact_website: Mapped[str] = mapped_column(String)
     is_share_job_social_media: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    # Many-to-Many with Association Object
+    users: Mapped[list["User"]] = relationship(secondary="career_page_user", back_populates="career_pages", viewonly=True)
+    career_page_users: Mapped[list["CareerPageUser"]] = relationship(back_populates="career_page")
 
     @validates("contact_email")
     def validate_contact_email(self, key, address):
@@ -32,3 +41,16 @@ class CareerPage(TimestampMixin, Base):
 
     def __str__(self) -> str:
         return f"CareerPage(id={self.id!s}, name={self.name}, currency={self.currency}, contact_email={self.contact_email})"
+
+
+class CareerPageUser(TimestampMixin, Base):
+    __tablename__ = "career_page_user"
+
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"), primary_key=True)
+    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"), primary_key=True)
+    status: Mapped[str] = mapped_column(String)
+    role: Mapped[str] = mapped_column(String)
+    last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    user: Mapped["User"] = relationship(back_populates="career_page_users")
+    career_page: Mapped["CareerPage"] = relationship(back_populates="career_page_users")

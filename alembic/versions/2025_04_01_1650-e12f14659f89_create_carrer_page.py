@@ -1,4 +1,4 @@
-"""create_carrer_page
+"""create_career_page
 
 Revision ID: e12f14659f89
 Revises: 4afce9cdab86
