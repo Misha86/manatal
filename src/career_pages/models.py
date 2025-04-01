@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
@@ -8,9 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.core.validators import validate_email
 from src.database import Base, TimestampMixin
-
-if TYPE_CHECKING:
-    from src.users.models import User
+from src.users.models import User
 
 
 class CareerPage(TimestampMixin, Base):
@@ -31,9 +28,7 @@ class CareerPage(TimestampMixin, Base):
     contact_website: Mapped[str] = mapped_column(String)
     is_share_job_social_media: Mapped[bool] = mapped_column(Boolean, default=False)
     
-    # Many-to-Many with Association Object
-    users: Mapped[list["User"]] = relationship(secondary="career_page_user", back_populates="career_pages", viewonly=True)
-    career_page_users: Mapped[list["CareerPageUser"]] = relationship(back_populates="career_page")
+    users: Mapped[list["CareerPageUser"]] = relationship()
 
     @validates("contact_email")
     def validate_contact_email(self, key, address):
@@ -52,5 +47,4 @@ class CareerPageUser(TimestampMixin, Base):
     role: Mapped[str] = mapped_column(String)
     last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    user: Mapped["User"] = relationship(back_populates="career_page_users")
-    career_page: Mapped["CareerPage"] = relationship(back_populates="career_page_users")
+    user: Mapped["User"] = relationship()
