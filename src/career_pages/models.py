@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, Numeric, String, func
+from sqlalchemy import ARRAY, JSON, Boolean, DateTime, ForeignKey, Integer, Numeric, String, func
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.core.validators import validate_email
@@ -47,6 +48,8 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     users: Mapped[list["CareerPageUser"]] = relationship()
     social_medias: Mapped[list["SocialMedia"]] = relationship(back_populates="career_page")
     job_posts: Mapped[list["JobPost"]] = relationship(back_populates="career_page")
+    application_forms: Mapped[list["ApplicationForm"]] = relationship(back_populates="career_page")
+
 
     @validates("contact_email")
     def validate_contact_email(self, key: str, address: str) -> str:
@@ -110,6 +113,7 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
     last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=func.now())
     created_by: Mapped[UUID] = mapped_column(String, nullable=True)
+    external_ids: Mapped[list[UUID]] = mapped_column(MutableList.as_mutable(ARRAY(String)))
 
     applicants: Mapped[list["Application"]] = relationship()
     job_post_translations: Mapped[list["JobPosTranslation"]] = relationship(back_populates="job_post")
@@ -143,6 +147,9 @@ class ApplicationForm(TimestampMixin, UUIDMixin, Base):
     is_default: Mapped[bool] = mapped_column(Boolean, default=False)
     is_favorite: Mapped[bool] = mapped_column(Boolean, default=False)
     created_by: Mapped[UUID] = mapped_column(String, nullable=True)
+    
+    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
+    career_page: Mapped["CareerPage"] = relationship(back_populates="application_forms")
 
     job_posts: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
     application_form_fields: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
