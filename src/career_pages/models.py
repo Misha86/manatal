@@ -1,12 +1,30 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, func
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, Numeric, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.core.validators import validate_email
 from src.database import Base, TimestampMixin, UUIDMixin
-from src.users.models import User
+
+
+class UserBase(TimestampMixin, UUIDMixin, Base):
+    __abstract__ = True
+
+    full_name: Mapped[str] = mapped_column(String(300))
+    email: Mapped[str] = mapped_column(String(255))
+    external_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), unique=True)
+
+    @validates("email")
+    def validate_email(self, key: str, address: str) -> str:
+        return validate_email(address)
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id!s}, external_id={self.external_id!s})"
+
+
+class User(UserBase):
+    __tablename__ = "user"
 
 
 class CareerPage(TimestampMixin, UUIDMixin, Base):
@@ -28,7 +46,7 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
 
     users: Mapped[list["CareerPageUser"]] = relationship()
     social_medias: Mapped[list["SocialMedia"]] = relationship(back_populates="career_page")
-
+    job_posts: Mapped[list["JobPost"]] = relationship(back_populates="career_page")
 
     @validates("contact_email")
     def validate_contact_email(self, key: str, address: str) -> str:
@@ -41,23 +59,113 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
 class CareerPageUser(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "career_page_user"
 
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
-    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
     status: Mapped[str] = mapped_column(String)
     role: Mapped[str] = mapped_column(String)
     last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=func.now())
 
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
     user: Mapped["User"] = relationship()
 
 
 class SocialMedia(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "social_media"
 
-    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
-    career_page: Mapped["CareerPage"] = relationship(back_populates="social_medias")
     type: Mapped[str] = mapped_column(String)
     url: Mapped[str] = mapped_column(String)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False)
 
+    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
+    career_page: Mapped["CareerPage"] = relationship(back_populates="social_medias")
+
     def __str__(self) -> str:
         return f"SocialMedia(id={self.id!s}, type={self.type}, url={self.url}, is_active={self.is_active})"
+
+
+class Applicant(UserBase):
+    __tablename__ = "applicant"
+
+
+class Application(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "application"
+
+    form: Mapped[dict] = mapped_column(JSON)
+
+    applicant_id: Mapped[UUID] = mapped_column(ForeignKey("applicant.id"))
+    job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id"))
+    applicant: Mapped["Applicant"] = relationship()
+
+
+class JobPost(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "job_post"
+
+    name: Mapped[str] = mapped_column(String(600))
+    status: Mapped[str] = mapped_column(String)
+    is_pinned: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_hide_salary: Mapped[bool] = mapped_column(Boolean, default=False)
+    payment_frequency: Mapped[str] = mapped_column(String)
+    work_type: Mapped[str] = mapped_column(String)
+    headcount: Mapped[int] = mapped_column(Integer)
+    minimun_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
+    maximun_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
+    last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=func.now())
+    created_by: Mapped[UUID] = mapped_column(String, nullable=True)
+
+    applicants: Mapped[list["Application"]] = relationship()
+    job_post_translations: Mapped[list["JobPosTranslation"]] = relationship(back_populates="job_post")
+
+    application_form_id: Mapped[UUID] = mapped_column(ForeignKey("application_form.id"))
+    application_form: Mapped["ApplicationForm"] = relationship(back_populates="job_posts")
+
+    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
+    career_page: Mapped["CareerPage"] = relationship(back_populates="job_posts")
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, status={self.status})"
+
+
+class JobPosTranslation(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "job_post_translation"
+
+    langue_code: Mapped[str] = mapped_column(String)
+
+    job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id"))
+    job_post: Mapped["JobPost"] = relationship(back_populates="job_post_translations")
+    
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id!s}, langue_code={self.langue_code})"
+
+
+class ApplicationForm(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "application_form"
+
+    name: Mapped[str] = mapped_column(String(600))
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_favorite: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_by: Mapped[UUID] = mapped_column(String, nullable=True)
+
+    job_posts: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
+    application_form_fields: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
+    
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, is_default={self.is_default})"
+
+
+class ApplicationFormField(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "application_form_field"
+
+    name: Mapped[str] = mapped_column(String(600))
+    label: Mapped[str] = mapped_column(String)
+    type: Mapped[str] = mapped_column(String)
+    slug: Mapped[bool] = mapped_column(Boolean, default=False)
+    source: Mapped[str] = mapped_column(String)
+    rank: Mapped[int] = mapped_column(Integer)
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_required: Mapped[bool] = mapped_column(Boolean, default=False)
+    options: Mapped[dict] = mapped_column(JSON)
+
+    application_form_id: Mapped[UUID] = mapped_column(ForeignKey("application_form.id"))
+    application_form: Mapped["ApplicationForm"] = relationship(back_populates="application_form_fields")
+    
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, is_default={self.is_default})"

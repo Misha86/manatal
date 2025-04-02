@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.users.models import User
+from src.career_pages.models import User
 
 if TYPE_CHECKING:
     from pydantic import UUID4

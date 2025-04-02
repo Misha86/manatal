@@ -4,7 +4,6 @@ from logging.config import fileConfig
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from src.database import Base
-from src.users.models import *
 from src.career_pages.models import *
 
 from alembic import context
