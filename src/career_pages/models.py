@@ -27,6 +27,8 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     is_share_job_social_media: Mapped[bool] = mapped_column(Boolean, default=False)
 
     users: Mapped[list["CareerPageUser"]] = relationship()
+    social_medias: Mapped[list["SocialMedia"]] = relationship(back_populates="career_page")
+
 
     @validates("contact_email")
     def validate_contact_email(self, key: str, address: str) -> str:
@@ -52,6 +54,7 @@ class SocialMedia(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "social_media"
 
     career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
+    career_page: Mapped["CareerPage"] = relationship(back_populates="social_medias")
     type: Mapped[str] = mapped_column(String)
     url: Mapped[str] = mapped_column(String)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False)
