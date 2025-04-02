@@ -152,7 +152,7 @@ class ApplicationForm(TimestampMixin, UUIDMixin, Base):
     career_page: Mapped["CareerPage"] = relationship(back_populates="application_forms")
 
     job_posts: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
-    application_form_fields: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
+    application_form_fields: Mapped[list["ApplicationFormField"]] = relationship(back_populates="application_form")
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, is_default={self.is_default})"
