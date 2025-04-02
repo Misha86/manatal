@@ -34,7 +34,7 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     logo_url: Mapped[str | None] = mapped_column(String, nullable=True)
     favicon_url: Mapped[str | None] = mapped_column(String, nullable=True)
     social_media_url: Mapped[str | None] = mapped_column(String, nullable=True)
-    langue_code: Mapped[str] = mapped_column(String)
+    language_code: Mapped[str] = mapped_column(String)
     is_referral_program: Mapped[bool] = mapped_column(Boolean, default=False)
     is_display_organization: Mapped[bool] = mapped_column(Boolean, default=False)
     is_powered_by_manatal: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -106,8 +106,8 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     payment_frequency: Mapped[str] = mapped_column(String)
     work_type: Mapped[str] = mapped_column(String)
     headcount: Mapped[int] = mapped_column(Integer)
-    minimun_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
-    maximun_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
+    minimum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
+    maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
     last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=func.now())
     created_by: Mapped[UUID] = mapped_column(String, nullable=True)
 
@@ -127,13 +127,13 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
 class JobPosTranslation(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "job_post_translation"
 
-    langue_code: Mapped[str] = mapped_column(String)
+    language_code: Mapped[str] = mapped_column(String)
 
     job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id"))
     job_post: Mapped["JobPost"] = relationship(back_populates="job_post_translations")
-    
+
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}(id={self.id!s}, langue_code={self.langue_code})"
+        return f"{self.__class__.__name__}(id={self.id!s}, language_code={self.language_code})"
 
 
 class ApplicationForm(TimestampMixin, UUIDMixin, Base):
@@ -146,7 +146,7 @@ class ApplicationForm(TimestampMixin, UUIDMixin, Base):
 
     job_posts: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
     application_form_fields: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
-    
+
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, is_default={self.is_default})"
 
@@ -166,6 +166,6 @@ class ApplicationFormField(TimestampMixin, UUIDMixin, Base):
 
     application_form_id: Mapped[UUID] = mapped_column(ForeignKey("application_form.id"))
     application_form: Mapped["ApplicationForm"] = relationship(back_populates="application_form_fields")
-    
+
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, is_default={self.is_default})"
