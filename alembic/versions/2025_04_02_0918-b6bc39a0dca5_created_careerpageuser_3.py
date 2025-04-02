@@ -1,8 +1,8 @@
-"""Created CareerPageUser
+"""Created CareerPageUser 3
 
-Revision ID: a66af220a637
+Revision ID: b6bc39a0dca5
 Revises: 
-Create Date: 2025-04-01 19:48:56.617053
+Create Date: 2025-04-02 09:18:01.273732
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a66af220a637'
+revision: str = 'b6bc39a0dca5'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -50,6 +50,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('career_page_user',
+    sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('career_page_id', sa.UUID(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
@@ -59,7 +60,7 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['career_page_id'], ['career_page.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('user_id', 'career_page_id')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 

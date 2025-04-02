@@ -14,7 +14,7 @@ class User(TimestampMixin, Base):
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     full_name: Mapped[str] = mapped_column(String(300))
     email: Mapped[str] = mapped_column(String)
-    external_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True))
+    external_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), unique=True)
 
     @validates("email")
     def validate_email(self, key, address):

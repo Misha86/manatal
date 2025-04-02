@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
@@ -41,10 +41,11 @@ class CareerPage(TimestampMixin, Base):
 class CareerPageUser(TimestampMixin, Base):
     __tablename__ = "career_page_user"
 
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"), primary_key=True)
-    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"), primary_key=True)
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
     status: Mapped[str] = mapped_column(String)
     role: Mapped[str] = mapped_column(String)
-    last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=func.now())
 
     user: Mapped["User"] = relationship()
