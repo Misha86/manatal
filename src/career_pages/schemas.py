@@ -8,7 +8,7 @@ class CareerPageBase(BaseModel):
     logo_url: str | None = None
     favicon_url: str | None = None
     social_media_url: str | None = None
-    langue_code: str
+    language_code: str
     is_referral_program: bool = False
     is_display_organization: bool = False
     is_powered_by_manatal: bool = False
@@ -25,7 +25,7 @@ class CareerPageCreate(CareerPageBase):
 
 class CareerPageUpdate(CareerPageBase):
     name: str | None = None
-    langue_code: str | None = None
+    language_code: str | None = None
     is_referral_program: bool | None = None
     is_display_organization: bool | None = None
     is_powered_by_manatal: bool | None = None
