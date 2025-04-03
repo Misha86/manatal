@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from fastapi import UploadFile
 from pydantic import UUID4, BaseModel, EmailStr
 
 
@@ -25,8 +26,13 @@ class CareerPageCreate(CareerPageBase):
     pass
 
 
-class CareerPageUpdate(CareerPageBase):
+class CareerPageUpdate(BaseModel):
     name: str | None = None
+    client_id: str | None = None
+    logo_url: UploadFile | None = None
+    favicon_url: UploadFile | None = None
+    social_media_url: UploadFile | None = None
+    job_post_limit: int | None = None
     language_code: str | None = None
     is_referral_program: bool | None = None
     is_display_organization: bool | None = None

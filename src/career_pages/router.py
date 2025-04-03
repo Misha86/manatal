@@ -1,5 +1,4 @@
-
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Form, HTTPException, status
 from pydantic import UUID4
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,9 +13,13 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[schemas.CareerPageRetrieve])
-async def get_career_pages(session: AsyncSession = Depends(get_async_session)):
+async def get_career_pages(
+    skip: int | None = None,
+    limit: int | None = None,
+    session: AsyncSession = Depends(get_async_session),
+):
     user_id = "97eea06d-b468-4f6e-9f93-3c9febfb9a9d"
-    return await service.get_user_career_pages(user_id, session)
+    return await service.get_user_career_pages(user_id, session, skip, limit)
 
 
 @router.post("/", response_model=schemas.CareerPageRetrieve)
@@ -37,9 +40,14 @@ async def get_career_page(career_page_id: UUID4, session: AsyncSession = Depends
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.put("/{career_page_id}", response_model=schemas.CareerPageRetrieve | None)
+@router.put("/{career_page_id}")
 async def update_career_page(
-    career_page_id: UUID4, career_page: schemas.CareerPageUpdate, session: AsyncSession = Depends(get_async_session)
+    career_page_id: UUID4,
+    career_page: schemas.CareerPageUpdate = Form(media_type="multipart/form-data"),
+    session: AsyncSession = Depends(get_async_session),
 ):
     user_id = "97eea06d-b468-4f6e-9f93-3c9febfb9a9d"
-    return await service.update_user_career_page(career_page_id, user_id, career_page.model_dump(exclude_unset=True), session)
+    if not (career_page := await service.get_user_career_page(career_page_id, user_id, session)):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    return career_page
