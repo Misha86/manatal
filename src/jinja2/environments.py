@@ -10,7 +10,7 @@ bytecode_cache: RedisBytecodeCache = RedisBytecodeCache(
 )
 
 jinja2_env: Environment = Environment(
-    loader=S3TemplateLoader(settings.AWS_STORAGE_BUCKET_NAME, settings.JINJA2_TEMPLATES_FOLDER, s3_client),
+    loader=S3TemplateLoader(settings.AWS_S3_BUCKET_NAME, settings.JINJA2_TEMPLATES_FOLDER, s3_client),
     autoescape=select_autoescape(enabled_extensions=("html",)),
     cache_size=settings.JINJA2_CACHE_SIZE,
     bytecode_cache=bytecode_cache,
