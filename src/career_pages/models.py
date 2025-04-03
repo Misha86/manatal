@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import ARRAY, JSON, Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, Table, func
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, Table, func
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.core.validators import validate_email
@@ -70,8 +69,6 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
 class CareerPageUser(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "career_page_user"
 
-    status: Mapped[str] = mapped_column(String)
-    role: Mapped[str] = mapped_column(String)
     last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=func.now())
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
@@ -130,7 +127,6 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     headcount: Mapped[int] = mapped_column(Integer)
     minimum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
     maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
-    external_ids: Mapped[list[UUID]] = mapped_column(MutableList.as_mutable(ARRAY(String)))
 
     applicants: Mapped[list["Application"]] = relationship()
     job_post_translations: Mapped[list["JobPosTranslation"]] = relationship(back_populates="job_post")
