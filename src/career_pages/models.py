@@ -52,7 +52,6 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     job_posts: Mapped[list["JobPost"]] = relationship(back_populates="career_page")
     application_forms: Mapped[list["ApplicationForm"]] = relationship(back_populates="career_page")
 
-
     @validates("contact_email")
     def validate_contact_email(self, key: str, address: str) -> str:
         return validate_email(address)
@@ -113,7 +112,6 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     headcount: Mapped[int] = mapped_column(Integer)
     minimum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
     maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
-    created_by: Mapped[UUID] = mapped_column(String, nullable=True)
     external_ids: Mapped[list[UUID]] = mapped_column(MutableList.as_mutable(ARRAY(String)))
 
     applicants: Mapped[list["Application"]] = relationship()
@@ -124,6 +122,9 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
 
     career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
     career_page: Mapped["CareerPage"] = relationship(back_populates="job_posts")
+
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship()
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, status={self.status})"
@@ -147,13 +148,15 @@ class ApplicationForm(TimestampMixin, UUIDMixin, Base):
     name: Mapped[str] = mapped_column(String(600))
     is_default: Mapped[bool] = mapped_column(Boolean, default=False)
     is_favorite: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_by: Mapped[UUID] = mapped_column(String, nullable=True)
-    
+
     career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
     career_page: Mapped["CareerPage"] = relationship(back_populates="application_forms")
 
     job_posts: Mapped[list["JobPost"]] = relationship(back_populates="application_form")
     application_form_fields: Mapped[list["ApplicationFormField"]] = relationship(back_populates="application_form")
+
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship()
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, is_default={self.is_default})"
