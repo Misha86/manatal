@@ -30,11 +30,16 @@ async def get_user_career_page(career_page_id: "UUID4", user_id: "UUID4", sessio
 async def update_user_career_page(
     career_page_id: "UUID4", user_id: "UUID4", data: dict[str, Any], session: AsyncSession
 ) -> CareerPage | None:
-    stmt = update(CareerPage).where(CareerPage.id == career_page_id, CareerPage.users.any(user_id=user_id)).values(**data)
-    await session.execute(stmt)
+    stmt = (
+        update(CareerPage)
+        .where(CareerPage.id == career_page_id, CareerPage.users.any(user_id=user_id))
+        .values(**data)
+        .returning(CareerPage)
+    )
+    result: "Result" = await session.execute(stmt)
     await session.commit()
 
-    return await get_user_career_page(career_page_id, user_id, session)
+    return result.scalar_one_or_none()
 
 
 async def create_career_page(data: dict[str, Any], session: AsyncSession) -> CareerPage:

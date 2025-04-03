@@ -49,5 +49,6 @@ async def update_career_page(
     user_id = "97eea06d-b468-4f6e-9f93-3c9febfb9a9d"
     if not (career_page := await service.get_user_career_page(career_page_id, user_id, session)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    career_page = await service.update_user_career_page(career_page_id, user_id, session)
 
     return career_page
