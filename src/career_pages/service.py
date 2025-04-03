@@ -10,8 +10,13 @@ if TYPE_CHECKING:
     from sqlalchemy.engine import Result
 
 
-async def get_user_career_pages(user_id: "UUID4", session: AsyncSession) -> CareerPage | None:
-    stmt = select(CareerPage).where(CareerPage.users.any(user_id=user_id))
+async def get_user_career_pages(
+    user_id: "UUID4",
+    session: AsyncSession,
+    skip: int | None = None,
+    limit: int | None = None,
+) -> CareerPage | None:
+    stmt = select(CareerPage).where(CareerPage.users.any(user_id=user_id)).offset(skip).limit(limit)
     result: "Result" = await session.scalars(stmt)
     return result.all()
 
@@ -24,7 +29,7 @@ async def get_user_career_page(career_page_id: "UUID4", user_id: "UUID4", sessio
 
 async def update_user_career_page(
     career_page_id: "UUID4", user_id: "UUID4", data: dict[str, Any], session: AsyncSession
-) -> CareerPage:
+) -> CareerPage | None:
     stmt = update(CareerPage).where(CareerPage.id == career_page_id, CareerPage.users.any(user_id=user_id)).values(**data)
     await session.execute(stmt)
     await session.commit()
