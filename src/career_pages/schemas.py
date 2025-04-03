@@ -5,6 +5,8 @@ from pydantic import UUID4, BaseModel, EmailStr
 
 class CareerPageBase(BaseModel):
     name: str
+    client_id: str
+    job_post_limit: int
     logo_url: str | None = None
     favicon_url: str | None = None
     social_media_url: str | None = None
