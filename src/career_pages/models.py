@@ -32,6 +32,8 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "career_page"
 
     name: Mapped[str] = mapped_column(String(600))
+    client_id: Mapped[str] = mapped_column(String)
+    job_post_limit: Mapped[int] = mapped_column(Integer)
     logo_url: Mapped[str | None] = mapped_column(String, nullable=True)
     favicon_url: Mapped[str | None] = mapped_column(String, nullable=True)
     social_media_url: Mapped[str | None] = mapped_column(String, nullable=True)
@@ -111,7 +113,6 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     headcount: Mapped[int] = mapped_column(Integer)
     minimum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
     maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
-    last_active_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=func.now())
     created_by: Mapped[UUID] = mapped_column(String, nullable=True)
     external_ids: Mapped[list[UUID]] = mapped_column(MutableList.as_mutable(ARRAY(String)))
 
