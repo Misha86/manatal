@@ -93,25 +93,3 @@ class S3Storage(BaseStorage):
     def delete(self, name: str) -> None:
         key = self.get_name(name)
         self._bucket.Object(key).delete()
-
-    def generate_new_filename(self, filename: str) -> str:
-        key = self.get_name(filename)
-        stem = Path(filename).stem
-        suffix = Path(filename).suffix
-        counter = 0
-
-        while self._check_object_exists(key):
-            counter += 1
-            filename = f"{stem}_{counter}{suffix}"
-            key = self.get_name(filename)
-
-        return filename
-
-    def _check_object_exists(self, key: str) -> bool:
-        try:
-            self._bucket.Object(key).load()
-        except boto3.exceptions.botocore.exceptions.ClientError as e:
-            if e.response["Error"]["Code"] == "404":
-                return False
-
-        return True
