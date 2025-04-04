@@ -1,4 +1,3 @@
-
 from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, Numeric, String, Table
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
@@ -69,7 +68,9 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
 class CareerPageUser(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "career_page_user"
 
-    status: Mapped[str] = mapped_column(Enum(UserCareerPageStatus), default=UserCareerPageStatus.BLOCKED)
+    status: Mapped[str] = mapped_column(
+        Enum(UserCareerPageStatus, name="career_page_user_status"), default=UserCareerPageStatus.blocked
+    )
     user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
     career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
 

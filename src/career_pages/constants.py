@@ -6,5 +6,5 @@ class UserCareerPageStatus(StrEnum):
     Enum for user career page status.
     """
 
-    ACTIVE = "active"
-    BLOCKED = "blocked"
+    active = "active"
+    blocked = "blocked"

@@ -1,8 +1,8 @@
-"""Add status to the CareerPageUser
+"""Add status to the CareerPageUser2
 
-Revision ID: eced6b7430e6
+Revision ID: 2f57c4e85d72
 Revises: 
-Create Date: 2025-04-04 15:51:13.510507
+Create Date: 2025-04-04 16:23:58.509068
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'eced6b7430e6'
+revision: str = '2f57c4e85d72'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -84,7 +84,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('career_page_user',
-    sa.Column('status', sa.Enum('ACTIVE', 'BLOCKED', name='usercareerpagestatus'), nullable=False),
+    sa.Column('status', sa.Enum('active', 'blocked', name='career_page_user_status'), nullable=False),
     sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('career_page_id', sa.UUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
