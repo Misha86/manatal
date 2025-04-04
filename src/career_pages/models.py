@@ -126,6 +126,7 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     payment_frequency: Mapped[str] = mapped_column(String)
     work_type: Mapped[str] = mapped_column(String)
     headcount: Mapped[int] = mapped_column(Integer)
+    header_key: Mapped[str] = mapped_column(String, nullable=True)
     minimum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
     maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
 
