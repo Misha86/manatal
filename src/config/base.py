@@ -1,5 +1,4 @@
 import secrets
-from pathlib import Path
 from typing import List, Union
 
 from pydantic import AnyHttpUrl, PostgresDsn, RedisDsn, ValidationInfo, field_validator
@@ -10,10 +9,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=True)
 
     PROJECT_NAME: str = "Manatal APIs"
+    API_PREFIX_V1: str = "/api/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ENVIRONMENT: str
-
-    BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 

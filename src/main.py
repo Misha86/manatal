@@ -20,7 +20,6 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-API_PREFIX_V1 = "/api/v1"
 
-app.include_router(users.router, prefix=API_PREFIX_V1)
-app.include_router(career_pages.router, prefix=API_PREFIX_V1)
+app.include_router(users.router, prefix=settings.API_PREFIX_V1)
+app.include_router(career_pages.router, prefix=settings.API_PREFIX_V1)
