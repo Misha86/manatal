@@ -1,6 +1,3 @@
-import secrets
-from typing import List, Union
-
 from pydantic import AnyHttpUrl, PostgresDsn, RedisDsn, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -10,19 +7,9 @@ class Settings(BaseSettings):
 
     PROJECT_NAME: str = "Manatal APIs"
     API_PREFIX_V1: str = "/api/v1"
-    SECRET_KEY: str = secrets.token_urlsafe(32)
     ENVIRONMENT: str
 
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
-
-    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
-    @classmethod
-    def assemble_cors_origins(cls, value: Union[str, List[str]]) -> Union[List[str], str]:
-        if isinstance(value, str) and not value.startswith("["):
-            return [i.strip() for i in value.split(",")]
-        elif isinstance(value, (list, str)):
-            return value
-        raise ValueError(value)
+    BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
@@ -71,3 +58,16 @@ class Settings(BaseSettings):
     AWS_REGION_NAME: str = "us-east-1"
     AWS_S3_BUCKET_NAME: str = "jinja2-test"
     AWS_S3_CUSTOM_DOMAIN: str = f"{AWS_S3_BUCKET_NAME}.s3.{AWS_REGION_NAME}.amazonaws.com"
+
+    JWT_VERIFYING_KEY: str = "local_verifying_key"
+    JWT_ALGORITHM: str = "RS256"
+    JWT_DISALLOW_SCOPES: list[str] = ["authentication"]
+
+    @field_validator("BACKEND_CORS_ORIGINS", "JWT_DISALLOW_SCOPES", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, value: str | list[str]) -> list[str] | str:
+        if isinstance(value, str) and not value.startswith("["):
+            return [i.strip() for i in value.split(",")]
+        elif isinstance(value, (list, str)):
+            return value
+        raise ValueError(value)
