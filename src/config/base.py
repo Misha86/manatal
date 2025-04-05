@@ -62,6 +62,7 @@ class Settings(BaseSettings):
     JWT_VERIFYING_KEY: str = "local_verifying_key"
     JWT_ALGORITHM: str = "RS256"
     JWT_DISALLOW_SCOPES: list[str] = ["authentication"]
+    JWT_ISSUER: str = "http://localhost:8000"
 
     @field_validator("BACKEND_CORS_ORIGINS", "JWT_DISALLOW_SCOPES", mode="before")
     @classmethod
