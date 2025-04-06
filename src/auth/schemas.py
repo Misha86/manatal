@@ -1,30 +1,16 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
-from pydantic import UUID4, BaseModel, EmailStr, field_validator
-from pytz import UTC
+from pydantic import UUID4, BaseModel, field_validator
 
 from src.config import settings
 
 
 class User(BaseModel):
-    full_name: str
-    email: EmailStr
-    external_id: UUID4
-
-
-class UserCreate(User):
-    pass
-
-
-class UserUpdate(BaseModel):
-    full_name: str | None = None
-    email: EmailStr | None = None
-
-
-class UserRetrieve(User):
     id: UUID4
-    created_at: datetime
-    updated_at: datetime
+    client_id: UUID4
+    full_name: str
+    email: str
+    avatar: str
 
 
 class TokenPayload(BaseModel):
@@ -33,7 +19,7 @@ class TokenPayload(BaseModel):
     iat: datetime
     user: User
     iss: str
-    scope: str | None
+    scope: str | None = None
 
     @field_validator("token_type", mode="before")
     @classmethod
@@ -45,9 +31,12 @@ class TokenPayload(BaseModel):
     @field_validator("iat", mode="before")
     @classmethod
     def validate_iat(cls, value: datetime) -> datetime:
-        if value > datetime.now(tz=UTC):
+        utc_timezone = timezone.utc
+        iat_datetime = datetime.fromtimestamp(value, tz=utc_timezone)
+        
+        if datetime.fromtimestamp(value, tz=utc_timezone) > datetime.now(tz=utc_timezone):
             raise ValueError("iat datetime is before the current time")
-        return value
+        return iat_datetime
 
     @field_validator("scope", mode="before")
     @classmethod
