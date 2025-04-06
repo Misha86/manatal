@@ -1,3 +1,5 @@
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 from pydantic import AnyHttpUrl, PostgresDsn, RedisDsn, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -59,7 +61,7 @@ class Settings(BaseSettings):
     AWS_S3_BUCKET_NAME: str = "jinja2-test"
     AWS_S3_CUSTOM_DOMAIN: str = f"{AWS_S3_BUCKET_NAME}.s3.{AWS_REGION_NAME}.amazonaws.com"
 
-    JWT_VERIFYING_KEY: str = "local_verifying_key"
+    JWT_VERIFYING_KEY: str
     JWT_ALGORITHM: str = "RS256"
     JWT_DISALLOW_SCOPES: list[str] = ["authentication"]
     JWT_ISSUER: str = "http://localhost:8000"
@@ -72,3 +74,18 @@ class Settings(BaseSettings):
         elif isinstance(value, (list, str)):
             return value
         raise ValueError(value)
+
+    @field_validator("JWT_VERIFYING_KEY")
+    @classmethod
+    def validate_jwt_verifying_key(cls, value: str) -> str:
+        public_key = value.replace("\\n", "\n")
+
+        if not public_key.startswith("-----BEGIN PUBLIC KEY-----") or not public_key.endswith("-----END PUBLIC KEY-----"):
+            raise ValueError("Invalid RS256 public key format.")
+
+        try:
+            serialization.load_pem_public_key(public_key.encode(), backend=default_backend())
+        except Exception as err:
+            raise ValueError(f"Invalid public key: {err}")
+
+        return public_key
