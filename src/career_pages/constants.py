@@ -136,3 +136,12 @@ class Currency(StrEnum):
     HTG = "Haitian Gourde"
     BBD = "Barbados Dollar"
     PGK = "Papua New Guinean Kina"
+
+
+class JobPostStatus(StrEnum):
+    """
+    Enum for job post status.
+    """
+
+    published = "published"
+    unpublished = "unpublished"
