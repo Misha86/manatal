@@ -46,7 +46,7 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     is_referral_program: Mapped[bool] = mapped_column(Boolean, default=False)
     is_display_organization: Mapped[bool] = mapped_column(Boolean, default=False)
     is_powered_by_manatal: Mapped[bool] = mapped_column(Boolean, default=False)
-    currency: Mapped[str] = mapped_column(Enum(Currency, name="career_page_currency"), default=Currency.USD)
+    currency: Mapped[str] = mapped_column(Enum(Currency, name="career_page_currency"), nullable=False)
     contact_email: Mapped[str] = mapped_column(String(255))
     contact_phone: Mapped[str] = mapped_column(String)
     contact_website: Mapped[str] = mapped_column(String)
