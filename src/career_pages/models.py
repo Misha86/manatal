@@ -1,5 +1,19 @@
-from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, Numeric, String, Table, UniqueConstraint
+
+from sqlalchemy import (
+    ARRAY,
+    JSON,
+    Boolean,
+    Column,
+    Enum,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Table,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.career_pages.constants import Currency, JobPostStatus, PaymentFrequency, UserCareerPageStatus, WorkType
@@ -133,6 +147,10 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
     header_key: Mapped[str | None] = mapped_column(String)
     currency: Mapped[str] = mapped_column(Enum(Currency, name="job_post_currency"))
+    description: Mapped[str] = mapped_column(String)
+    location: Mapped[str] = mapped_column(String)
+    contract_details: Mapped[str] = mapped_column(String)
+    external_ids: Mapped[list[UUID]] = mapped_column(MutableList.as_mutable(ARRAY(String)))
 
     applicants: Mapped[list["Application"]] = relationship()
     job_post_translations: Mapped[list["JobPosTranslation"]] = relationship(back_populates="job_post")
