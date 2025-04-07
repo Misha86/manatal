@@ -51,6 +51,7 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     contact_phone: Mapped[str] = mapped_column(String)
     contact_website: Mapped[str] = mapped_column(String)
     is_share_job_social_media: Mapped[bool] = mapped_column(Boolean, default=False)
+    domain: Mapped[str] = mapped_column(String, nullable=True)
 
     users: Mapped[list["CareerPageUser"]] = relationship()
     social_medias: Mapped[list["SocialMedia"]] = relationship(back_populates="career_page")
