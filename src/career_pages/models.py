@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, Numeric, String, Table
+from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, Numeric, String, Table, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
@@ -79,6 +79,8 @@ class CareerPageUser(TimestampMixin, UUIDMixin, Base):
 
 class SocialMedia(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "social_media"
+
+    __table_args__ = (UniqueConstraint("career_page_id", "type", name="uix_career_page_type"),)
 
     type: Mapped[str] = mapped_column(String)
     url: Mapped[str] = mapped_column(String)
