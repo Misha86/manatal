@@ -145,3 +145,15 @@ class JobPostStatus(StrEnum):
 
     published = "published"
     unpublished = "unpublished"
+
+
+class PaymentFrequency(StrEnum):
+    """
+    Enum for payment frequency.
+    """
+
+    hour = "hour"
+    day = "day"
+    week = "week"
+    month = "month"
+    year = "year"
