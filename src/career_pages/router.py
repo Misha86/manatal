@@ -20,7 +20,7 @@ async def get_career_pages(user: User = Depends(JWTBearer()), session: AsyncSess
     return await service.get_paginated_user_career_pages(user.id, session)
 
 
-@router.post("/", response_model=schemas.CareerPageRetrieve)
+@router.post("/", response_model=schemas.CareerPageRetrieve, status_code=status.HTTP_201_CREATED)
 async def create_career_page(
     career_page: schemas.CareerPageCreate,
     user: User = Depends(JWTBearer()),
