@@ -1,17 +1,4 @@
-
-from sqlalchemy import (
-    ARRAY,
-    JSON,
-    Boolean,
-    Column,
-    Enum,
-    ForeignKey,
-    Integer,
-    Numeric,
-    String,
-    Table,
-    UniqueConstraint,
-)
+from sqlalchemy import ARRAY, JSON, Boolean, Enum, ForeignKey, Integer, Numeric, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
@@ -19,13 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from src.career_pages.constants import Currency, JobPostStatus, PaymentFrequency, UserCareerPageStatus, WorkType
 from src.core.validators import validate_email
 from src.database import Base, TimestampMixin, UUIDMixin
-
-job_post_link = Table(
-    "job_post_link",
-    Base.metadata,
-    Column("job_post_id", ForeignKey("job_post.id"), primary_key=True),
-    Column("external_job_post_id", ForeignKey("external_job_post.id"), primary_key=True),
-)
 
 
 class UserBase(TimestampMixin, UUIDMixin, Base):
@@ -122,17 +102,6 @@ class Application(TimestampMixin, UUIDMixin, Base):
     applicant: Mapped["Applicant"] = relationship()
 
 
-class ExternalJobPost(TimestampMixin, UUIDMixin, Base):
-    __tablename__ = "external_job_post"
-
-    external_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), unique=True)
-
-    job_posts: Mapped[list["JobPost"]] = relationship(secondary=job_post_link, back_populates="external_job_posts")
-
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__}(id={self.id!s}, external_id={self.external_id}"
-
-
 class JobPost(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "job_post"
 
@@ -163,8 +132,6 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship()
-
-    external_job_posts: Mapped[list["ExternalJobPost"]] = relationship(secondary=job_post_link, back_populates="job_posts")
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, status={self.status})"
