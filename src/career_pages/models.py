@@ -2,7 +2,7 @@ from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from src.career_pages.constants import Currency, JobPostStatus, PaymentFrequency, UserCareerPageStatus
+from src.career_pages.constants import Currency, JobPostStatus, PaymentFrequency, UserCareerPageStatus, WorkType
 from src.core.validators import validate_email
 from src.database import Base, TimestampMixin, UUIDMixin
 
@@ -127,7 +127,7 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     is_pinned: Mapped[bool] = mapped_column(Boolean, default=False)
     is_hide_salary: Mapped[bool] = mapped_column(Boolean, default=False)
     payment_frequency: Mapped[str] = mapped_column(Enum(PaymentFrequency, name="job_post_payment_frequency"), nullable=False)
-    work_type: Mapped[str] = mapped_column(String)
+    work_type: Mapped[str] = mapped_column(Enum(WorkType, name="job_post_work_type"), nullable=False)
     headcount: Mapped[int] = mapped_column(Integer)
     header_key: Mapped[str] = mapped_column(String, nullable=True)
     minimum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))

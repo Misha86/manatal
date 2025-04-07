@@ -157,3 +157,18 @@ class PaymentFrequency(StrEnum):
     week = "week"
     month = "month"
     year = "year"
+
+
+class WorkType(StrEnum):
+    """
+    Enum for work type.
+    """
+
+    full_time = "full_time"
+    part_time = "part_time"
+    temporary = "temporary"
+    freelance = "freelance"
+    internship = "internship"
+    apprenticeship = "apprenticeship"
+    contractor = "contractor"
+    consultancy = "consultancy"
