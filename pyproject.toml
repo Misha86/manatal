@@ -21,6 +21,7 @@ pydantic = {extras = ["email"], version = "^2.11.1"}
 boto3 = "^1.37.26"
 pyjwt = "^2.10.1"
 pytz = "^2025.2"
+fastapi-pagination = "^0.12.34"
 
 
 [tool.poetry.group.dev.dependencies]

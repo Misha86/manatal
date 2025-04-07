@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
+from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,6 +20,11 @@ async def get_user_career_pages(
     stmt = select(CareerPage).where(CareerPage.users.any(user_id=user_id)).offset(skip).limit(limit)
     result: "Result" = await session.scalars(stmt)
     return result.all()
+
+
+async def get_paginated_user_career_pages(user_id: "UUID4", session: AsyncSession) -> CareerPage | None:
+    stmt = select(CareerPage).where(CareerPage.users.any(user_id=user_id))
+    return await paginate(conn=session, query=stmt)
 
 
 async def get_user_career_page(career_page_id: "UUID4", user_id: "UUID4", session: AsyncSession) -> CareerPage | None:

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Form, HTTPException, status
+from fastapi_pagination import Page
 from pydantic import UUID4
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,14 +15,9 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[schemas.CareerPageRetrieve])
-async def get_career_pages(
-    user: User = Depends(JWTBearer()),
-    skip: int | None = None,
-    limit: int | None = None,
-    session: AsyncSession = Depends(get_async_session),
-):
-    return await service.get_user_career_pages(user.id, session, skip, limit)
+@router.get("/", response_model=Page[schemas.CareerPageRetrieve])
+async def get_career_pages(user: User = Depends(JWTBearer()), session: AsyncSession = Depends(get_async_session)):
+    return await service.get_paginated_user_career_pages(user.id, session)
 
 
 @router.post("/", response_model=schemas.CareerPageRetrieve)

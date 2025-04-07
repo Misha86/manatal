@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_pagination import add_pagination
 
 from src import career_pages, users
 from src.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
-
+add_pagination(app)
 
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
