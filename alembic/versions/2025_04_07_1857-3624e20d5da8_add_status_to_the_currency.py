@@ -1,8 +1,8 @@
-"""Add status to the CareerPageUser2
+"""Add status to the currency
 
-Revision ID: 2f57c4e85d72
+Revision ID: 3624e20d5da8
 Revises: 
-Create Date: 2025-04-04 16:23:58.509068
+Create Date: 2025-04-07 18:57:58.372113
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2f57c4e85d72'
+revision: str = '3624e20d5da8'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -42,7 +42,7 @@ def upgrade() -> None:
     sa.Column('is_referral_program', sa.Boolean(), nullable=False),
     sa.Column('is_display_organization', sa.Boolean(), nullable=False),
     sa.Column('is_powered_by_manatal', sa.Boolean(), nullable=False),
-    sa.Column('currency', sa.String(), nullable=False),
+    sa.Column('currency', sa.Enum('EUR', 'USD', 'THB', 'AUD', 'BRL', 'ETB', 'HKD', 'IDR', 'INR', 'MYR', 'PHP', 'PKR', 'SGD', 'CNY', 'ZAR', 'AFN', 'ALL', 'AED', 'ARS', 'AMD', 'AZN', 'BIF', 'XOF', 'BDT', 'BGN', 'BHD', 'BAM', 'BZD', 'BOB', 'BND', 'NOK', 'BWP', 'XAF', 'CAD', 'CHF', 'CLP', 'CDF', 'NZD', 'COP', 'KMF', 'CVE', 'CRC', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'MAD', 'GBP', 'GEL', 'GHS', 'GNF', 'GTQ', 'HNL', 'HRK', 'HUF', 'IRR', 'IQD', 'ISK', 'ILS', 'JMD', 'JOD', 'JPY', 'KZT', 'KES', 'KHR', 'KRW', 'KWD', 'LBP', 'LYD', 'LKR', 'MOP', 'MDL', 'MGA', 'MXN', 'MKD', 'MMK', 'MZN', 'MUR', 'NAD', 'NGN', 'NIO', 'NPR', 'OMR', 'PAB', 'PEN', 'PLN', 'PYG', 'QAR', 'RON', 'RUB', 'RWF', 'SAR', 'SDG', 'SOS', 'RSD', 'SEK', 'SYP', 'TOP', 'TTD', 'TND', 'TRY', 'TWD', 'TZS', 'UGX', 'UAH', 'UYU', 'UZS', 'VEF', 'VND', 'YER', 'MNT', 'SRD', 'ZWL', 'ZMW', 'AOA', 'HTG', 'BBD', 'PGK', name='career_page_currency'), nullable=False),
     sa.Column('contact_email', sa.String(length=255), nullable=False),
     sa.Column('contact_phone', sa.String(), nullable=False),
     sa.Column('contact_website', sa.String(), nullable=False),
@@ -103,7 +103,8 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('id', sa.UUID(), nullable=False),
     sa.ForeignKeyConstraint(['career_page_id'], ['career_page.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('career_page_id', 'type', name='uix_career_page_type')
     )
     op.create_table('application_form_field',
     sa.Column('name', sa.String(length=600), nullable=False),
@@ -130,6 +131,7 @@ def upgrade() -> None:
     sa.Column('payment_frequency', sa.String(), nullable=False),
     sa.Column('work_type', sa.String(), nullable=False),
     sa.Column('headcount', sa.Integer(), nullable=False),
+    sa.Column('header_key', sa.String(), nullable=True),
     sa.Column('minimum_salary', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('maximum_salary', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('application_form_id', sa.UUID(), nullable=False),

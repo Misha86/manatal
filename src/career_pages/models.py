@@ -2,7 +2,7 @@ from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from src.career_pages.constants import UserCareerPageStatus
+from src.career_pages.constants import Currency, UserCareerPageStatus
 from src.core.validators import validate_email
 from src.database import Base, TimestampMixin, UUIDMixin
 
@@ -46,7 +46,7 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     is_referral_program: Mapped[bool] = mapped_column(Boolean, default=False)
     is_display_organization: Mapped[bool] = mapped_column(Boolean, default=False)
     is_powered_by_manatal: Mapped[bool] = mapped_column(Boolean, default=False)
-    currency: Mapped[str] = mapped_column(String)
+    currency: Mapped[str] = mapped_column(Enum(Currency, name="career_page_currency"), default=Currency.USD)
     contact_email: Mapped[str] = mapped_column(String(255))
     contact_phone: Mapped[str] = mapped_column(String)
     contact_website: Mapped[str] = mapped_column(String)
