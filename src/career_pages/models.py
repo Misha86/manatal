@@ -105,8 +105,8 @@ class Application(TimestampMixin, UUIDMixin, Base):
 
     form: Mapped[dict] = mapped_column(JSON)
 
-    applicant_id: Mapped[UUID] = mapped_column(ForeignKey("applicant.id"))
-    job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id"))
+    applicant_id: Mapped[UUID] = mapped_column(ForeignKey("applicant.id", ondelete="CASCADE"))
+    job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id", ondelete="CASCADE"))
     applicant: Mapped["Applicant"] = relationship()
 
 

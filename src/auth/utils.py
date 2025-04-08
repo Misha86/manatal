@@ -56,7 +56,7 @@ def encode_bearer(user_data: dict[str, Any], expires_in_minutes: int, scope: str
 
 
 user_data = {
-    "id": "1da57ace-dfa5-4858-a770-47d0a26520e3",
+    "id": "0bf588f2-823e-4d3f-a48a-56be3778315c",
     "client_id": 1,
     "full_name": "John Doe",
     "email": "john.doe@example.com",
