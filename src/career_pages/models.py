@@ -21,6 +21,7 @@ class UserBase(TimestampMixin, UUIDMixin, Base):
     full_name: Mapped[str | None] = mapped_column(String(300))
     email: Mapped[str | None] = mapped_column(String(255))
     external_id: Mapped[int] = mapped_column(Integer, unique=True)
+    avatar_url: Mapped[str | None] = mapped_column(String)
 
     @validates("email")
     def validate_email(self, key: str, address: str) -> str:
