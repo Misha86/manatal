@@ -7,7 +7,7 @@ from src.config import settings
 
 class User(BaseModel):
     id: UUID4
-    client_id: UUID4
+    client_id: int
     full_name: str
     email: str
     avatar: str

@@ -6,16 +6,16 @@ from pydantic import UUID4, BaseModel, EmailStr
 
 class CareerPageBase(BaseModel):
     name: str
-    client_id: str
+    client_id: int
     job_post_limit: int
-    logo_url: str | None = None
-    favicon_url: str | None = None
-    social_media_url: str | None = None
+    logo_key: str | None = None
+    favicon_key: str | None = None
+    social_media_key: str | None = None
     language_code: str
     is_referral_program: bool = False
     is_display_organization: bool = False
     is_powered_by_manatal: bool = False
-    currency: str
+    currency: str = "USD"
     contact_email: EmailStr
     contact_phone: str
     contact_website: str
@@ -29,9 +29,9 @@ class CareerPageCreate(CareerPageBase):
 class CareerPageUpdate(BaseModel):
     name: str | None = None
     client_id: str | None = None
-    logo_url: UploadFile | None = None
-    favicon_url: UploadFile | None = None
-    social_media_url: UploadFile | None = None
+    logo_key: UploadFile | None = None
+    favicon_key: UploadFile | None = None
+    social_media_key: UploadFile | None = None
     job_post_limit: int | None = None
     language_code: str | None = None
     is_referral_program: bool | None = None

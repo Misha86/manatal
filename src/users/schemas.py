@@ -6,7 +6,8 @@ from pydantic import UUID4, BaseModel, EmailStr
 class User(BaseModel):
     full_name: str
     email: EmailStr
-    external_id: UUID4
+    external_id: int
+    avatar_url: str
 
 
 class UserCreate(User):
