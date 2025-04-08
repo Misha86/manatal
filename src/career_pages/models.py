@@ -1,6 +1,5 @@
-from sqlalchemy import ARRAY, JSON, Boolean, Enum, Float, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import JSON, Boolean, Enum, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.career_pages.constants import (
@@ -18,10 +17,10 @@ from src.database import Base, TimestampMixin, UUIDMixin
 class UserBase(TimestampMixin, UUIDMixin, Base):
     __abstract__ = True
 
-    full_name: Mapped[str | None] = mapped_column(String(300))
-    email: Mapped[str | None] = mapped_column(String(255))
+    full_name: Mapped[str] = mapped_column(String(300))
+    email: Mapped[str] = mapped_column(String(255))
     external_id: Mapped[int] = mapped_column(Integer, unique=True)
-    avatar_url: Mapped[str | None] = mapped_column(String)
+    avatar_url: Mapped[str] = mapped_column(String)
 
     @validates("email")
     def validate_email(self, key: str, address: str) -> str:
@@ -152,7 +151,6 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     description: Mapped[str | None] = mapped_column(String)
     location: Mapped[str | None] = mapped_column(String)
     contract_details: Mapped[str] = mapped_column(String)
-    external_ids: Mapped[list[UUID]] = mapped_column(MutableList.as_mutable(ARRAY(String)))
 
     applicants: Mapped[list["Application"]] = relationship()
     job_post_translations: Mapped[list["JobPosTranslation"]] = relationship(back_populates="job_post")
