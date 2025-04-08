@@ -116,8 +116,8 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     maximum_salary: Mapped[float] = mapped_column(Float)
     header_key: Mapped[str | None] = mapped_column(String)
     currency: Mapped[str] = mapped_column(Enum(Currency, name="job_post_currency"))
-    description: Mapped[str] = mapped_column(String)
-    location: Mapped[str] = mapped_column(String)
+    description: Mapped[str | None] = mapped_column(String)
+    location: Mapped[str | None] = mapped_column(String)
     contract_details: Mapped[str] = mapped_column(String)
     external_ids: Mapped[list[UUID]] = mapped_column(MutableList.as_mutable(ARRAY(String)))
 
