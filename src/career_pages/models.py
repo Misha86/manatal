@@ -1,4 +1,4 @@
-from sqlalchemy import ARRAY, JSON, Boolean, Enum, ForeignKey, Integer, Numeric, String, UniqueConstraint
+from sqlalchemy import ARRAY, JSON, Boolean, Enum, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
@@ -112,8 +112,8 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     payment_frequency: Mapped[str] = mapped_column(Enum(PaymentFrequency, name="job_post_payment_frequency"))
     work_type: Mapped[str] = mapped_column(Enum(WorkType, name="job_post_work_type"))
     headcount: Mapped[int] = mapped_column(Integer)
-    minimum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
-    maximum_salary: Mapped[float] = mapped_column(Numeric(precision=10, scale=2))
+    minimum_salary: Mapped[float] = mapped_column(Float)
+    maximum_salary: Mapped[float] = mapped_column(Float)
     header_key: Mapped[str | None] = mapped_column(String)
     currency: Mapped[str] = mapped_column(Enum(Currency, name="job_post_currency"))
     description: Mapped[str] = mapped_column(String)
