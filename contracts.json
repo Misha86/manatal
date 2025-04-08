@@ -60,20 +60,36 @@
 {
     "id": "uuid",
     "name": "string",
-    "is_pinned": "boolean",
-    "status": "string",
-    "description": "string", // format (string, file)
-    "location": "string", // ?
+    "location": "string",
+    "work_type": "string", // enum
     "headcount": "integer",
-    "contract_details": "string", // ?
-    "minimum_salary": "integer",
-    "maximum_salary": "integer",
-    "currency": "string", // ?
+    "contract_details": "string", // enum
+    "minimum_salary": "double",
+    "maximum_salary": "double",
+    "currency": "string", // enum
+    "is_hide_salary": "boolean",
     "payment_frequency": "string", // enum
-    "application_form": "string", // name
+    "application_form": "string", // application form 'name'
+    "description": "string""is_pinned": "boolean",
+    "status": "string", // enum
     "external_job_posts": [
-        "string/uuids"
-    ], // ? external_id[]
+        {
+            "id": "uuid",
+            "name": "string",
+            "created_at": "datetime",
+            "updated_at": "datetime"
+        }
+    ],
+    "translations": [
+        {
+            "id": "uuid",
+            "language_code": "string",
+            "created_at": "datetime",
+            "updated_at": "datetime"
+        }
+    ],
+    "created_at": "datetime",
+    "updated_at": "datetime"
 }
 // PATCH api/v1/job-posts/{job_post_id}
 // request (json, multipart/form-data)
@@ -255,3 +271,37 @@
     "full_name": "string",
     "avatar_url": "string",
 }
+// GET api/v1/job-posts/{job_post_id}/external-links/
+// response 
+[
+    {
+        "id": "uuid",
+        "name": "string",
+        "external_id": "integer",
+        "created_at": "datetime",
+        "updated_at": "datetime"
+    }
+]
+// POST api/v1/job-posts/{job_post_id}/external-links/
+// request
+[
+    {
+        "external_id": "integer",
+        "name": "string"
+    }
+]
+// response 
+[
+    {
+        "id": "uuid",
+        "name": "string",
+        "created_at": "datetime",
+        "updated_at": "datetime"
+    },
+    // "translation": {
+    //     "id": "uuid",
+    //     "language_code": "string",
+    //     "created_at": "datetime",
+    //     "updated_at": "datetime"
+    // },
+]
