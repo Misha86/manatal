@@ -110,6 +110,30 @@ class Application(TimestampMixin, UUIDMixin, Base):
     applicant: Mapped["Applicant"] = relationship()
 
 
+class ExternalJobPost(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "external_job_post"
+
+    name: Mapped[str] = mapped_column(String(600))
+    external_id: Mapped[int] = mapped_column(Integer, unique=True)
+
+    job_posts: Mapped[list["JobPost"]] = relationship(back_populates="external_job_posts")
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id!s}, external_id={self.external_id}"
+
+
+class JobPostLink(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "job_post_link"
+
+    __table_args__ = (UniqueConstraint("job_post_id", "external_job_post_id", name="uq_job_post_link"),)
+
+    job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id"))
+    external_job_post_id: Mapped[UUID] = mapped_column(ForeignKey("external_job_post.id"))
+
+    job_post: Mapped["JobPost"] = relationship(back_populates="external_job_posts")
+    external_job_post: Mapped["ExternalJobPost"] = relationship(back_populates="job_posts")
+
+
 class JobPost(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "job_post"
 
@@ -140,6 +164,8 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship()
+
+    external_job_posts: Mapped[list["ExternalJobPost"]] = relationship(back_populates="job_posts")
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, status={self.status})"
