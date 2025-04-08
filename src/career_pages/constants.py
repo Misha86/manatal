@@ -8,6 +8,14 @@ class UserCareerPageStatus(StrEnum):
 
     active = "active"
     blocked = "blocked"
+    
+class CareerPageStatus(StrEnum):
+    """
+    Enum for career page status.
+    """
+
+    active = "active"
+    inactive = "inactive"
 
 
 class Currency(StrEnum):

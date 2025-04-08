@@ -3,7 +3,14 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from src.career_pages.constants import Currency, JobPostStatus, PaymentFrequency, UserCareerPageStatus, WorkType
+from src.career_pages.constants import (
+    CareerPageStatus,
+    Currency,
+    JobPostStatus,
+    PaymentFrequency,
+    UserCareerPageStatus,
+    WorkType,
+)
 from src.core.validators import validate_email
 from src.database import Base, TimestampMixin, UUIDMixin
 
@@ -11,9 +18,9 @@ from src.database import Base, TimestampMixin, UUIDMixin
 class UserBase(TimestampMixin, UUIDMixin, Base):
     __abstract__ = True
 
-    full_name: Mapped[str] = mapped_column(String(300))
-    email: Mapped[str] = mapped_column(String(255))
-    external_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), unique=True)
+    full_name: Mapped[str | None] = mapped_column(String(300))
+    email: Mapped[str | None] = mapped_column(String(255))
+    external_id: Mapped[int] = mapped_column(Integer, unique=True)
 
     @validates("email")
     def validate_email(self, key: str, address: str) -> str:
@@ -31,11 +38,11 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "career_page"
 
     name: Mapped[str] = mapped_column(String(600))
-    client_id: Mapped[str] = mapped_column(String)
+    client_id: Mapped[int] = mapped_column(Integer)
     job_post_limit: Mapped[int] = mapped_column(Integer)
-    logo_url: Mapped[str | None] = mapped_column(String, nullable=True)
-    favicon_url: Mapped[str | None] = mapped_column(String, nullable=True)
-    social_media_url: Mapped[str | None] = mapped_column(String, nullable=True)
+    logo_key: Mapped[str | None] = mapped_column(String, nullable=True)
+    favicon_key: Mapped[str | None] = mapped_column(String, nullable=True)
+    social_media_key: Mapped[str | None] = mapped_column(String, nullable=True)
     language_code: Mapped[str] = mapped_column(String)
     is_referral_program: Mapped[bool] = mapped_column(Boolean, default=False)
     is_display_organization: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -46,6 +53,7 @@ class CareerPage(TimestampMixin, UUIDMixin, Base):
     contact_website: Mapped[str] = mapped_column(String)
     is_share_job_social_media: Mapped[bool] = mapped_column(Boolean, default=False)
     domain: Mapped[str] = mapped_column(String, nullable=True)
+    status: Mapped[str] = mapped_column(Enum(CareerPageStatus, name="career_page_status"), default=CareerPageStatus.active)
 
     users: Mapped[list["CareerPageUser"]] = relationship()
     social_medias: Mapped[list["SocialMedia"]] = relationship(back_populates="career_page")
@@ -64,7 +72,7 @@ class CareerPageUser(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "career_page_user"
 
     status: Mapped[str] = mapped_column(
-        Enum(UserCareerPageStatus, name="career_page_user_status"), default=UserCareerPageStatus.blocked
+        Enum(UserCareerPageStatus, name="career_page_user_status"), default=UserCareerPageStatus.active
     )
     user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
     career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id"))
