@@ -153,7 +153,6 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     header_key: Mapped[str | None] = mapped_column(String)
     currency: Mapped[str] = mapped_column(Enum(Currency, name="job_post_currency"))
     description: Mapped[str | None] = mapped_column(String)
-    location: Mapped[str | None] = mapped_column(String)
     contract_details: Mapped[str] = mapped_column(String)
 
     applicants: Mapped[list["Application"]] = relationship()
@@ -170,6 +169,8 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
 
     external_job_posts: Mapped[list["JobPostLink"]] = relationship(back_populates="job_post")
 
+    location: Mapped["Location"] = relationship(back_populates="job_post", uselist=False)
+
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, name={self.name}, status={self.status})"
 
@@ -184,6 +185,22 @@ class JobPosTranslation(TimestampMixin, UUIDMixin, Base):
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(id={self.id!s}, language_code={self.language_code})"
+
+
+class Location(TimestampMixin, UUIDMixin, Base):
+    __tablename__ = "location"
+
+    country: Mapped[str] = mapped_column(String)
+    city: Mapped[str] = mapped_column(String)
+    state: Mapped[str | None] = mapped_column(String)
+    latitude: Mapped[float] = mapped_column(Float)
+    longitude: Mapped[float] = mapped_column(Float)
+
+    job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id", ondelete="CASCADE"), unique=True)
+    job_post: Mapped["JobPost"] = relationship(back_populates="location", single_parent=True)
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id!s}, country={self.country}, city={self.city})"
 
 
 class ApplicationForm(TimestampMixin, UUIDMixin, Base):
