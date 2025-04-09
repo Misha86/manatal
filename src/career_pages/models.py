@@ -1,4 +1,6 @@
-from sqlalchemy import JSON, Boolean, Enum, Float, ForeignKey, Integer, String, UniqueConstraint
+from datetime import datetime
+
+from sqlalchemy import JSON, Boolean, DateTime, Enum, Float, ForeignKey, Integer, String, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
@@ -74,6 +76,8 @@ class CareerPageUser(TimestampMixin, UUIDMixin, Base):
     status: Mapped[str] = mapped_column(
         Enum(UserCareerPageStatus, name="career_page_user_status"), default=UserCareerPageStatus.active
     )
+    last_active_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now())
+
     user_id: Mapped[UUID] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
     career_page_id: Mapped[UUID] = mapped_column(ForeignKey("career_page.id", ondelete="CASCADE"))
 
