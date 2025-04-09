@@ -141,7 +141,6 @@ class JobPostLink(TimestampMixin, UUIDMixin, Base):
 class JobPost(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "job_post"
 
-    name: Mapped[str] = mapped_column(String(600))
     status: Mapped[str] = mapped_column(Enum(JobPostStatus, name="job_post_status"), default=JobPostStatus.unpublished)
     is_pinned: Mapped[bool] = mapped_column(Boolean, default=False)
     is_hide_salary: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -152,7 +151,6 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
     maximum_salary: Mapped[float] = mapped_column(Float)
     header_key: Mapped[str | None] = mapped_column(String)
     currency: Mapped[str] = mapped_column(Enum(Currency, name="job_post_currency"))
-    description: Mapped[str | None] = mapped_column(String)
     contract_details: Mapped[str] = mapped_column(String)
 
     applicants: Mapped[list["Application"]] = relationship()
@@ -179,6 +177,8 @@ class JobPosTranslation(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "job_post_translation"
 
     language_code: Mapped[str] = mapped_column(String)
+    name: Mapped[str] = mapped_column(String(600))
+    description: Mapped[str | None] = mapped_column(String)
 
     job_post_id: Mapped[UUID] = mapped_column(ForeignKey("job_post.id", ondelete="CASCADE"))
     job_post: Mapped["JobPost"] = relationship(back_populates="job_post_translations")
