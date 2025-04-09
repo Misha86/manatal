@@ -23,9 +23,12 @@ async def get_user_career_pages(
     return result.all()
 
 
-async def get_paginated_user_career_pages(user_id: "UUID4", session: AsyncSession) -> CareerPage | None:
-    print(getattr(CareerPage, "name"))
-    stmt = select(CareerPage).where(CareerPage.users.any(user_id=user_id)).order_by(text("created_at asc"))
+async def get_paginated_user_career_pages(
+    user_id: "UUID4",
+    session: AsyncSession,
+    order_by: str = "",
+) -> CareerPage | None:
+    stmt = select(CareerPage).where(CareerPage.users.any(user_id=user_id)).order_by(text(order_by))
     return await paginate(conn=session, query=stmt)
 
 

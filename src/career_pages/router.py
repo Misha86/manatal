@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.dependencies import JWTBearer
 from src.auth.schemas import User
 from src.career_pages import schemas, service
-from src.dependencies import get_async_session
+from src.dependencies import get_async_session, get_sort_param
 
 router = APIRouter(
     prefix="/career-pages",
@@ -16,8 +16,12 @@ router = APIRouter(
 
 
 @router.get("/", response_model=Page[schemas.CareerPageRetrieve])
-async def get_career_pages(user: User = Depends(JWTBearer()), session: AsyncSession = Depends(get_async_session)):
-    return await service.get_paginated_user_career_pages(user.id, session)
+async def get_career_pages(
+    sort: str = Depends(get_sort_param(["name", "created_at", "status"], "name")),
+    user: User = Depends(JWTBearer()),
+    session: AsyncSession = Depends(get_async_session),
+):
+    return await service.get_paginated_user_career_pages(user.id, session, sort)
 
 
 @router.post("/", response_model=schemas.CareerPageRetrieve, status_code=status.HTTP_201_CREATED)

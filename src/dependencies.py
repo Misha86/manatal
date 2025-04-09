@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
+from fastapi import Query
 from redis.asyncio import from_url
 
 from src.config import settings
@@ -23,3 +24,17 @@ async def get_redis() -> "AsyncGenerator[Redis, None]":
         yield session
     finally:
         await session.aclose()
+
+
+def get_sort_param(allowed_fields: list[str], default: str) -> Callable[..., str]:
+    allowed_fields += [f"-{f}" for f in allowed_fields]
+
+    def process_param(sort: str = Query(default, enum=allowed_fields)) -> str:
+        if sort not in allowed_fields:
+            sort = default
+
+        direction = "desc" if sort.startswith("-") else "asc"
+        field = sort.lstrip("-")
+        return f"{field} {direction}"
+
+    return process_param
