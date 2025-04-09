@@ -175,6 +175,8 @@ class JobPost(TimestampMixin, UUIDMixin, Base):
 
 class JobPosTranslation(TimestampMixin, UUIDMixin, Base):
     __tablename__ = "job_post_translation"
+    
+    __table_args__ = (UniqueConstraint("language_code", "job_post_id", name="uq_language_code_job_post"),)
 
     language_code: Mapped[str] = mapped_column(String)
     name: Mapped[str] = mapped_column(String(600))
