@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, Form, Request, UploadFile
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from pydantic import UUID4
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.utils import render_to_string
 from src.dependencies import get_async_session, get_redis
+from src.jinja2.utils import render_to_string
 from src.users import schemas, service
 
 router = APIRouter(
@@ -15,19 +15,24 @@ router = APIRouter(
 )
 
 
-@router.get("/{user_id}", response_model=schemas.UserData)
+@router.get("/{user_id}", response_model=schemas.UserRetrieve | None)
 async def get_user(user_id: UUID4, session: AsyncSession = Depends(get_async_session)):
-    return await service.get_user(session, user_id) or {}
+    return await service.get_user(session, user_id)
 
 
-@router.get("/", response_model=list[schemas.UserData])
+@router.get("/", response_model=list[schemas.UserRetrieve])
 async def get_users(session: AsyncSession = Depends(get_async_session)):
     return await service.get_users(session)
 
 
-@router.post("/", response_model=schemas.UserData)
-async def create_upload_files(logo: UploadFile, name: str = Form(), session: AsyncSession = Depends(get_async_session)):
-    return await service.create_user(logo, name, session)
+@router.post("/", response_model=schemas.UserRetrieve)
+async def create_user(user: schemas.UserCreate, session: AsyncSession = Depends(get_async_session)):
+    return await service.create_user(user.model_dump(), session)
+
+
+@router.put("/{user_id}", response_model=schemas.UserRetrieve | None)
+async def update_user(user_id: UUID4, user: schemas.UserUpdate, session: AsyncSession = Depends(get_async_session)):
+    return await service.update_user(user_id, user.model_dump(exclude_unset=True), session)
 
 
 @router.get("/{user_id}/html", response_class=HTMLResponse)

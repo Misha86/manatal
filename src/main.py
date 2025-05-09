@@ -1,13 +1,38 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
+from fastapi_pagination import add_pagination
 
-from src import users
+from src import career_pages, users
 from src.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
+add_pagination(app)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"detail": jsonable_encoder(exc.errors())})
+
+
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    if exc.status_code == status.HTTP_403_FORBIDDEN:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"code": "PERMISSION_DENIED", "details": "You do not have permission to perform this action."},
+        )
+    elif exc.status_code == status.HTTP_401_UNAUTHORIZED:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"code": "AUTH_TOKEN_ERROR", "details": "Authentication failed. Contact support if the problem persists."},
+        )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"message": exc.detail},
+    )
 
 
 if settings.BACKEND_CORS_ORIGINS:
@@ -20,4 +45,5 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
-app.include_router(users.router, prefix="/api/v1")
+app.include_router(users.router, prefix=settings.API_PREFIX_V1)
+app.include_router(career_pages.router, prefix=settings.API_PREFIX_V1)

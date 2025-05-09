@@ -1,0 +1,307 @@
+// GET api/v1/career-pages/{career_page_id}/job-posts
+// request
+// career_page_id: UUID
+// query
+{
+    "page": "integer",
+    "size": "integer",
+    "order_by": "string"
+}
+// response(add total pages)
+{
+    "items": [
+        {
+            "id": "uuid",
+            "name": "string",
+            "status": "string",
+            "is_pinned": "boolean",
+            "created_at": "datetime",
+        }
+    ],
+    "total": "integer",
+    "page": "integer",
+    "size": "integer",
+    "pages": "integer"
+}
+// POST api/v1/career-pages/{career_page_id}/job-posts
+// request (json, multipart/form-data)
+{
+    "name": "string",
+    "contract_details": "string", // ?
+    "location": "string", // ?
+    "is_hide_salary": "boolean",
+    "payment_frequency": "string", // enum
+    "work_type": "string", // enum
+    "headcount": "integer",
+    "minimum_salary": "integer",
+    "maximum_salary": "integer",
+    "application_form_id": "uuid",
+    "currency": "string", // ?
+    "description": "string" // format (string, file)
+}
+// response
+{
+    "id": "uuid",
+    "name": "string",
+    "is_pinned": "boolean",
+    "status": "boolean",
+    "description": "string", // format (string, file)
+    "location": "string", // ?
+    "headcount": "integer",
+    "contract_details": "string", // ?
+    "minimum_salary": "integer",
+    "maximum_salary": "integer",
+    "currency": "string", // ?
+    "payment_frequency": "string", // enum
+    "application_form": "string", // name
+}
+// GET api/v1/job-posts/{job_post_id}
+// response (json, multipart/form-data)
+{
+    "id": "uuid",
+    "name": "string",
+    "location": "string",
+    "work_type": "string", // enum
+    "headcount": "integer",
+    "contract_details": "string", // enum
+    "minimum_salary": "double",
+    "maximum_salary": "double",
+    "currency": "string", // enum
+    "is_hide_salary": "boolean",
+    "payment_frequency": "string", // enum
+    "application_form": "string", // application form 'name'
+    "description": "string""is_pinned": "boolean",
+    "status": "string", // enum
+    "external_job_posts": [
+        {
+            "id": "uuid",
+            "name": "string",
+            "created_at": "datetime",
+            "updated_at": "datetime"
+        }
+    ],
+    "translations": [
+        {
+            "id": "uuid",
+            "language_code": "string",
+            "created_at": "datetime",
+            "updated_at": "datetime"
+        }
+    ],
+    "created_at": "datetime",
+    "updated_at": "datetime"
+}
+// PATCH api/v1/job-posts/{job_post_id}
+// request (json, multipart/form-data)
+{
+    "name": "string",
+    "contract_details": "string", // ?
+    "location": "string", // ?
+    "is_hide_salary": "boolean",
+    "payment_frequency": "string", // enum
+    "work_type": "string", // enum
+    "headcount": "integer",
+    "minimum_salary": "integer",
+    "maximum_salary": "integer",
+    "application_form_id": "uuid",
+    "currency": "string", // ?
+    "description": "string", // format (string, file)
+    "is_pinned": "boolean",
+    "status": "string",
+    "header_key": "string",
+    // "external_ids": ["uuid"]
+}
+// GET api/v1/career-pages
+// response
+[
+    {
+        "id": "uuid",
+        "name": "string",
+    }
+]
+// POST api/v1/career-pages
+// request
+{
+    "name": "string",
+    "logo_url": "string",
+    "favicon_url": "string",
+    "social_media_url": "string",
+    "language_code": "string",
+    "is_referral_program": "boolean",
+    "is_display_organization": "boolean",
+    "is_powered_by_manatal": "boolean",
+    "currency": "string", // enum
+    "contact_email": "string",
+    "contact_phone": "string",
+    "contact_website": "string",
+    "is_share_job_social_media": "boolean",
+    "domain": "string", // ? (add to db)
+    "social_media": [
+        {
+            "type": "string",
+            "url": "string",
+            "is_active": "boolean"
+        }
+    ],
+}
+// GET api/v1/career-pages/{career_page_id}
+// response
+{
+    "id": "uuid",
+    "name": "string",
+    "logo_url": "string",
+    "favicon_url": "string",
+    "social_media_url": "string",
+    "language_code": "string",
+    "is_referral_program": "boolean",
+    "is_display_organization": "boolean",
+    "is_powered_by_manatal": "boolean",
+    "currency": "string", // enum
+    "contact_email": "string",
+    "contact_phone": "string",
+    "contact_website": "string",
+    "is_share_job_social_media": "boolean",
+    "domain": "string", // ? (add to db)
+    "social_media": [
+        {
+            "type": "string",
+            "url": "string",
+            "is_active": "boolean"
+        }
+    ],
+}
+// PATCH api/v1/career-pages/{career_page_id}
+// request
+{
+    "name": "string",
+    "logo_url": "string",
+    "favicon_url": "string",
+    "social_media_url": "string",
+    "language_code": "string",
+    "is_referral_program": "boolean",
+    "is_display_organization": "boolean",
+    "is_powered_by_manatal": "boolean",
+    "currency": "string", // enum
+    "contact_email": "string",
+    "contact_phone": "string",
+    "contact_website": "string",
+    "is_share_job_social_media": "boolean",
+    "domain": "string", // ? (add to db)
+    "social_media": [
+        {
+            "type": "string",
+            "url": "string",
+            "is_active": "boolean"
+        }
+    ],
+}
+// response
+{
+    "id": "uuid",
+    "name": "string",
+    "logo_url": "string",
+    "favicon_url": "string",
+    "social_media_url": "string",
+    "language_code": "string",
+    "is_referral_program": "boolean",
+    "is_display_organization": "boolean",
+    "is_powered_by_manatal": "boolean",
+    "currency": "string", // enum
+    "contact_email": "string",
+    "contact_phone": "string",
+    "contact_website": "string",
+    "is_share_job_social_media": "boolean",
+    "domain": "string", // ? (add to db)
+    "social_media": [
+        {
+            "type": "string",
+            "url": "string",
+            "is_active": "boolean"
+        }
+    ],
+}
+// GET api/v1/job-posts/{job_post_id}/applications
+// query
+{
+    "page": "integer",
+    "size": "integer",
+    "order_by": "string"
+}
+// response(add total pages)
+{
+    "items": [
+        {
+            "id": "uuid",
+            "full_name": "string",
+            "created_at": "datetime",
+        }
+    ],
+    "total": "integer",
+    "page": "integer",
+    "size": "integer",
+    "pages": "integer"
+}
+// POST api/v1/job-posts/{job_post_id}/applications
+// request
+{
+    "full_name": "string",
+    "email": "string",
+    "form": "json"
+}
+// response
+{
+    "id": "uuid",
+    "full_name": "string",
+    "email": "string",
+    "form": "json"
+}
+// GET api/v1/applications/{app_id}
+// response
+{
+    "id": "uuid",
+    "full_name": "string",
+    "email": "string",
+    "form": "json"
+}
+// GET api/v1/users/me
+// response 
+{
+    "id": "uuid",
+    "email": "string",
+    "full_name": "string",
+    "avatar_url": "string",
+}
+// GET api/v1/job-posts/{job_post_id}/external-links/
+// response 
+[
+    {
+        "id": "uuid",
+        "name": "string",
+        "external_id": "integer",
+        "created_at": "datetime",
+        "updated_at": "datetime"
+    }
+]
+// POST api/v1/job-posts/{job_post_id}/external-links/
+// request
+[
+    {
+        "external_id": "integer",
+        "name": "string"
+    }
+]
+// response 
+[
+    {
+        "id": "uuid",
+        "name": "string",
+        "created_at": "datetime",
+        "updated_at": "datetime"
+    },
+    // "translation": {
+    //     "id": "uuid",
+    //     "language_code": "string",
+    //     "created_at": "datetime",
+    //     "updated_at": "datetime"
+    // },
+]
